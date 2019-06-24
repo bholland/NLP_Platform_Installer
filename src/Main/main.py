@@ -5,11 +5,11 @@ Created on Jun 19, 2019
 '''
 
 from pathlib import Path
-from Main.Setup_CPE_XML_Template import *
-from Main.FJSP_FolderReader_Document_Data_Ingest_CPE import *
-from Main.FJSP_FolderReader_Document_Data_Process_CPE import *
-from Main.FJSP_FolderReader_Model_Data_Ingest_CPE import *
-from Main.FJSP_FolderReader_Model_Data_Process_CPE import *
+from Main.Setup_CPE_XML_Template import generate_setup_cpe
+from Main.FJSP_FolderReader_Document_Data_Ingest_CPE import generate_folder_reader_document_data_ingest_cpe
+from Main.FJSP_FolderReader_Document_Data_Process_CPE import generate_folder_reader_document_data_process_cpe
+from Main.FJSP_FolderReader_Model_Data_Ingest_CPE import generate_folder_reader_model_data_ingest_cpe
+from Main.FJSP_FolderReader_Model_Data_Process_CPE import generate_folder_reader_model_data_process_cpe
 
 from Main.Collection_Processor_Setup import generate_collection_processor_setup
 from Main.FJSP_Collection_Processor_Document_Data_Ingest import generate_FJSP_Collection_Processor_Document_Data_Ingest
