@@ -267,7 +267,7 @@ The default is 0.</description>
       <nameValuePair>
         <name>UseJobQueue</name>
         <value>
-          <integer>2</integer>
+          <integer>$JOB_QUEUE_VALUE</integer>
         </value>
       </nameValuePair>
       <nameValuePair>
@@ -313,11 +313,18 @@ The default is 0.</description>
 </collectionReaderDescription>
 """
 
-def generate_folder_reader_model_data_process_cpe(output_file, base_model_folder, database_server, database, database_user, database_password, database_port):
+def generate_folder_reader_model_data_process_cpe(output_file, base_model_folder, database_server, database, database_user, database_password, database_port, use_job_queue):
     """output_file: a pathlib object"""
+    job_queue_value = None
+    if use_job_queue == True:
+        job_queue_value = "2"
+    else:
+        job_queue_value = "0"
+        
     s = Template(FJSP_FolderReader_Model_Data_Process_CPE)
     ret = s.substitute(DATABASE_SERVER=database_server, DATABASE_USER=database_user, DATABASE=database,
-                       DATABASE_PASSWORD=database_password, DATABASE_PORT=database_port, BASE_MODEL_FOLDER=base_model_folder)
+                       DATABASE_PASSWORD=database_password, DATABASE_PORT=database_port, 
+                       BASE_MODEL_FOLDER=base_model_folder, JOB_QUEUE_VALUE=job_queue_value)
     with output_file.open(mode="w") as out_file:
         out_file.write(ret)
 

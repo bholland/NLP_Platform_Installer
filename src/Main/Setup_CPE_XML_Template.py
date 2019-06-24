@@ -104,7 +104,7 @@ XML_SETUP_CPE_XML = """<?xml version="1.0" encoding="UTF-8"?>
       <nameValuePair>
         <name>UseJobQueue</name>
         <value>
-          <integer>1</integer>
+          <integer>$JOB_QUEUE_VALUE</integer>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
@@ -134,11 +134,16 @@ XML_SETUP_CPE_XML = """<?xml version="1.0" encoding="UTF-8"?>
 </collectionReaderDescription>
 """
 
-def generate_setup_cpe(output_file, database_server, database, database_user, database_password, database_port):
+def generate_setup_cpe(output_file, database_server, database, database_user, database_password, database_port, use_job_queue):
     """output_file: a pathlib object"""
+    job_queue_value = None
+    if (use_job_queue == True):
+        job_queue_value = "1"
+    else:
+        job_queue_value = "0"
     s = Template(XML_SETUP_CPE_XML)
     ret = s.substitute(DATABASE_SERVER=database_server, DATABASE_USER=database_user, DATABASE=database,
-                       DATABASE_PASSWORD=database_password, DATABASE_PORT=database_port)
+                       DATABASE_PASSWORD=database_password, DATABASE_PORT=database_port, JOB_QUEUE_VALUE=job_queue_value)
     with output_file.open(mode="w") as out_file:
         out_file.write(ret)
     

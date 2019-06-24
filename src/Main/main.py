@@ -11,6 +11,13 @@ from Main.FJSP_FolderReader_Document_Data_Process_CPE import *
 from Main.FJSP_FolderReader_Model_Data_Ingest_CPE import *
 from Main.FJSP_FolderReader_Model_Data_Process_CPE import *
 
+from Main.Collection_Processor_Setup import generate_collection_processor_setup
+from Main.FJSP_Collection_Processor_Document_Data_Ingest import generate_FJSP_Collection_Processor_Document_Data_Ingest
+from Main.FJSP_Collection_Processor_Document_Data_Process import generate_FJSP_Collection_Processor_Document_Data_Process
+from Main.FJSP_Collection_Processor_Model_Data_Ingest import generate_FJSP_Collection_Processor_Model_Data_Ingest
+from Main.FJSP_Collection_Processor_Model_Data_Process import generate_FJSP_Collection_Processor_Model_Data_Process
+
+
 import os
 import argparse
 
@@ -18,22 +25,27 @@ import argparse
 
 def clean_xml(file_root, new_root):
     
-    if file_root[0] != "/":
-        raise Exception("file_root should not be a relative path.")
+    #if file_root[0] != "/":
+    #    raise Exception("file_root should not be a relative path.")
     if file_root[-1] != "/":
         file_root = "{}/".format(file_root)
     
-    if new_root[0] != "/":
-        raise Exception("new_root should not be a relative path.")
+    #if new_root[0] != "/":
+    #    raise Exception("new_root should not be a relative path.")
     if new_root[-1] != "/":
         new_root = "{}/".format(new_root)
-
+    
     p = Path(file_root)
+    file_root_parts = p.parts
+    
     xml_list = list(p.glob("**/*.xml"))
+    print (xml_list)
     for xml_file in xml_list:
-        new_xml_folder_name = xml_file.parent.as_uri().replace("file://", "")
-        new_xml_folder_name = new_xml_folder_name.replace(file_root, new_root)
-        p_new_folder = Path(new_xml_folder_name)
+        xml_file_parent_parts = xml_file.parent.parts
+        new_folder = Path(new_root)
+        for x in range(len(file_root_parts), len(xml_file_parent_parts)):
+            new_folder = new_folder / xml_file_parent_parts[x]
+        p_new_folder = Path(new_folder)
         p_new_folder.mkdir(parents=True, exist_ok=True)
         
         with xml_file.open() as in_xml_file:
@@ -42,8 +54,6 @@ def clean_xml(file_root, new_root):
                 for line in in_xml_file.readlines():
                     if len(line.strip()) == 0:
                         continue
-                    if line.find('<type allAnnotatorFeatures="true">objects.DatabaseConnection</type>') >= 0 and out_xml.as_uri().find("/FJSP/") >= 0:
-                        print(out_xml.as_uri())
                     out_xml_file.write("{}\n".format(line.rstrip()))
                     
                     
@@ -67,6 +77,9 @@ def Setup():
     
     parser.add_argument("--category_text_folder", action="store", default=["category_text"], nargs=1, help="The folder containing all texts to use as a category training data.")
     parser.add_argument("--document_text_folder", action="store", default=["document_text"], nargs=1, help="The folder containing all texts to catagorze based on the training data.")
+    
+    parser.add_argument("--job_queue", action="store_true", help="Use the job queue rather than CPU threads (the default). This will always set the number of threads to 1.")
+    parser.add_argument("-j", "--threads", action="store", default=["1"], help="Use CPU threads.")
     parsed_args = parser.parse_args()
     
     ret = {}
@@ -86,6 +99,13 @@ def Setup():
     ret["database_password"] = parsed_args.database_password[0]
     ret["category_text_folder"] = parsed_args.category_text_folder[0]
     ret["document_text_folder"] = parsed_args.document_text_folder[0]
+    
+    ret["job_queue"] = parsed_args.job_queue
+    ret["threads"] = parsed_args.threads[0]
+    
+    if ret["job_queue"] == True:
+        ret["threads"] = "1"
+
     return ret
            
 def create_setup_cpe(arg_dict):
@@ -95,7 +115,8 @@ def create_setup_cpe(arg_dict):
                        arg_dict["database"], 
                        arg_dict["database_user"], 
                        arg_dict["database_password"], 
-                       arg_dict["database_port"])
+                       arg_dict["database_port"], 
+                       arg_dict["job_queue"])
 
 def create_document_set(arg_dict):
     document_ingest_xml = Path("{}/ContentProcessingEngine/FJSP/FJSP_Collection_Processor_Document_Data_Ingest_CPE.xml".format(arg_dict["root"]))
@@ -105,7 +126,8 @@ def create_document_set(arg_dict):
                                                          arg_dict["database"], 
                                                          arg_dict["database_user"], 
                                                          arg_dict["database_password"], 
-                                                         arg_dict["database_port"])
+                                                         arg_dict["database_port"], 
+                                                         arg_dict["job_queue"])
     document_process_xml = Path("{}/ContentProcessingEngine/FJSP/FJSP_Collection_Processor_Document_Data_Process_CPE.xml".format(arg_dict["root"]))
     generate_folder_reader_document_data_process_cpe(document_process_xml,
                                                          arg_dict["document_text_folder"], 
@@ -113,7 +135,8 @@ def create_document_set(arg_dict):
                                                          arg_dict["database"], 
                                                          arg_dict["database_user"], 
                                                          arg_dict["database_password"], 
-                                                         arg_dict["database_port"])
+                                                         arg_dict["database_port"], 
+                                                         arg_dict["job_queue"])
 def create_model_set(arg_dict):
     model_ingest_xml = Path("{}/ContentProcessingEngine/FJSP/FJSP_Collection_Processor_Model_Data_Ingest_CPE.xml".format(arg_dict["root"]))
     generate_folder_reader_model_data_ingest_cpe(model_ingest_xml,
@@ -122,7 +145,8 @@ def create_model_set(arg_dict):
                                                       arg_dict["database"], 
                                                       arg_dict["database_user"], 
                                                       arg_dict["database_password"], 
-                                                      arg_dict["database_port"])
+                                                      arg_dict["database_port"], 
+                                                      arg_dict["job_queue"])
     model_process_xml = Path("{}/ContentProcessingEngine/FJSP/FJSP_Collection_Processor_Model_Data_Process_CPE.xml".format(arg_dict["root"]))
     generate_folder_reader_model_data_process_cpe(model_process_xml,
                                                        arg_dict["document_text_folder"], 
@@ -130,7 +154,27 @@ def create_model_set(arg_dict):
                                                        arg_dict["database"], 
                                                        arg_dict["database_user"], 
                                                        arg_dict["database_password"], 
-                                                       arg_dict["database_port"])
+                                                       arg_dict["database_port"], 
+                                                       arg_dict["job_queue"])
+def create_cpe_set(arg_dict):
+    cas_pool_size = arg_dict["threads"]
+    threads = arg_dict["threads"]
+    
+    xml_document = Path("{}/ContentProcessingEngine/FJSP/Collection_Processor_Setup.xml".format(arg_dict["root"]))
+    generate_collection_processor_setup(xml_document, cas_pool_size, threads)
+    
+    xml_document = Path("{}/ContentProcessingEngine/FJSP/FJSP_Collection_Processor_Document_Data_Ingest.xml".format(arg_dict["root"]))
+    generate_FJSP_Collection_Processor_Document_Data_Ingest(xml_document, cas_pool_size, threads)
+    
+    xml_document = Path("{}/ContentProcessingEngine/FJSP/FJSP_Collection_Processor_Document_Data_Process.xml".format(arg_dict["root"]))
+    generate_FJSP_Collection_Processor_Document_Data_Process(xml_document, cas_pool_size, threads)
+    
+    xml_document = Path("{}/ContentProcessingEngine/FJSP/FJSP_Collection_Processor_Model_Data_Ingest.xml".format(arg_dict["root"]))
+    generate_FJSP_Collection_Processor_Model_Data_Ingest(xml_document, cas_pool_size, threads)
+    
+    xml_document = Path("{}/ContentProcessingEngine/FJSP/FJSP_Collection_Processor_Model_Data_Process.xml".format(arg_dict["root"]))
+    generate_FJSP_Collection_Processor_Model_Data_Process(xml_document, cas_pool_size, threads)
+    
 def clean(copy_root, new_root):
     clean_xml(copy_root, new_root)
 
@@ -145,6 +189,7 @@ def main():
         create_setup_cpe(arg_dict)
         create_document_set(arg_dict)
         create_model_set(arg_dict)
+        create_cpe_set(arg_dict)
         
 
 
