@@ -69,6 +69,51 @@ XML_SETUP_CPE_XML = """<?xml version="1.0" encoding="UTF-8"?>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
+      
+      <configurationParameter>
+        <name>ProjectName</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ProjectType</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>CheckoutTimeout</name>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ProjectOwnerUserName</name>
+        <description>This is the username for the project owner</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ProjectOwnerEmail</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ProjectOwnerFirstName</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ProjectOwnerLastName</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -107,6 +152,50 @@ XML_SETUP_CPE_XML = """<?xml version="1.0" encoding="UTF-8"?>
           <integer>$JOB_QUEUE_VALUE</integer>
         </value>
       </nameValuePair>
+      
+      <nameValuePair>
+        <name>ProjectName</name>
+        <value>
+          <string>$PROJECT_NAME</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ProjectType</name>
+        <value>
+          <string>$PROJECT_TYPE</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>CheckoutTimeout</name>
+        <value>
+          <integer>$CHECKOUT_TIMEOUT</integer>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ProjectOwnerUserName</name>
+        <value>
+          <string>$PROJECT_OWNER_USER_NAME</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ProjectOwnerEmail</name>
+        <value>
+          <string>$PROJECT_OWNER_EMAIL</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ProjectOwnerFirstName</name>
+        <value>
+          <string>$PROJECT_OWNER_FIRST_NAME</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ProjectOwnerLastName</name>
+        <value>
+          <string>$PROJECT_OWNER_LAST_NAME</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
@@ -134,7 +223,9 @@ XML_SETUP_CPE_XML = """<?xml version="1.0" encoding="UTF-8"?>
 </collectionReaderDescription>
 """
 
-def generate_setup_cpe(output_file, database_server, database, database_user, database_password, database_port, use_job_queue):
+def generate_setup_cpe(output_file, database_server, database, database_user, database_password, database_port, use_job_queue,
+                       project_name, project_type, checkout_timeout, proejct_owner_user_name, project_owner_email, project_owner_first_name,
+                       project_owner_last_name):
     """output_file: a pathlib object"""
     job_queue_value = None
     if (use_job_queue == True):
@@ -142,8 +233,15 @@ def generate_setup_cpe(output_file, database_server, database, database_user, da
     else:
         job_queue_value = "0"
     s = Template(XML_SETUP_CPE_XML)
+    #proejct type should be dual_validation
+    if project_type == "1":
+        project_type = "dual_validation" #This needs to match the java code project types. 
     ret = s.substitute(DATABASE_SERVER=database_server, DATABASE_USER=database_user, DATABASE=database,
-                       DATABASE_PASSWORD=database_password, DATABASE_PORT=database_port, JOB_QUEUE_VALUE=job_queue_value)
+                       DATABASE_PASSWORD=database_password, DATABASE_PORT=database_port, JOB_QUEUE_VALUE=job_queue_value,
+                       PROJECT_NAME=project_name, PROJECT_TYPE=project_type, CHECKOUT_TIMEOUT=checkout_timeout, 
+                       PROJECT_OWNER_USER_NAME=proejct_owner_user_name,
+                       PROJECT_OWNER_EMAIL=project_owner_email, PROJECT_OWNER_FIRST_NAME=project_owner_first_name, 
+                       PROJECT_OWNER_LAST_NAME=project_owner_last_name)
     with output_file.open(mode="w") as out_file:
         out_file.write(ret)
     
