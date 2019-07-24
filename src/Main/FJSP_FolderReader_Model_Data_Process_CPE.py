@@ -255,7 +255,7 @@ The default is 0.</description>
       <nameValuePair>
         <name>DatabasePort</name>
         <value>
-          <string>5432</string>
+          <string>$DATABASE_PORT</string>
         </value>
       </nameValuePair>
       <nameValuePair>

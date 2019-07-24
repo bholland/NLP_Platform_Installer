@@ -497,7 +497,7 @@ The default is 0.</description>
                 
         <value>
                     
-          <string>5432</string>
+          <string>pgsql</string>
                   
         </value>
               

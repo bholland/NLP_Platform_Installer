@@ -252,9 +252,9 @@ The default is 0.</description>
         </value>
       </nameValuePair>
       <nameValuePair>
-        <name>DatabaseType</name>
+        <name>DatabasePort</name>
         <value>
-          <string>5432</string>
+          <string>$DATABASE_PORT</string>
         </value>
       </nameValuePair>
       <nameValuePair>
