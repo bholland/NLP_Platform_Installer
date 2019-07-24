@@ -1,6 +1,5 @@
 from string import Template
 from pathlib import Path
-from builtins import None
 
 FJSP_Collection_Processor_Document_Data_Ingest = """<?xml version="1.0" encoding="UTF-8"?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
