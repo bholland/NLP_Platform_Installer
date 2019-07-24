@@ -635,9 +635,9 @@ def Generate_FJSP_Collection_Processor_Base(output_file,
     #is_insert == false: process
     if use_job_queue == False:
         job_queue_value = "0"
-    elif use_job_queue == True && is_insert == True:
+    elif use_job_queue == True and is_insert == True:
         job_queue_value = "1"
-    elif use_job_queue == True && is_insert == False:
+    elif use_job_queue == True and is_insert == False:
         job_queue_value = "2"
     
         
