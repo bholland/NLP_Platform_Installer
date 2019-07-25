@@ -265,8 +265,8 @@ def main_prod():
     """
     
     config = ConfigFile() 
-    arg_dict = config.load_config()
-    print(arg_dict)
+    arg_dict_10 = config.load_config()
+    print(arg_dict_10)
     
     #put_99_ncic()
 if __name__ == '__main__':
