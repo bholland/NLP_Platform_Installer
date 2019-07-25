@@ -23,6 +23,7 @@ import os
 import argparse
 import csv
 import multiprocessing as mp
+from Main.ConfigFile import ConfigFile
 
 
 def clean_xml(file_root, new_root):
@@ -93,6 +94,17 @@ def Setup():
     
     parser.add_argument("--job_queue", action="store_true", help="Use the job queue rather than CPU threads (the default). This will always set the number of threads to 1.")
     parser.add_argument("-j", "--threads", action="store", default=["1"], help="Use CPU threads.")
+    
+    parser.add_argument("--no_text", action="store_false", help="Do not read text files. The default is to read text files.")
+    parser.add_argument("--no_csv", action="store_false", help="Do not read csv files. The default is to read csv files.")
+    parser.add_argument("--no_pdf", action="store_false", help="Do not read pdf files. The default is to read pdf files.")
+    parser.add_argument("--no_docx", action="store_false", help="Do not read docx files. The default is to read docx files.")
+    
+    parser.add_argument("--csv_id", action="append", help="This is the set of id column names to use for the csv files. Mutliple flags are allowed.")
+    parser.add_argument("--csv_text", action="append", help="This is the set of text column names to use for the csv file.")
+    parser.add_argument("--csv_category", action="append", help="This is the set of category column names to use for the csv file.")
+    
+    
     parsed_args = parser.parse_args()
     
     ret = {}
@@ -238,6 +250,8 @@ def main_prod():
     #arg_dict = Setup()
     #walk_route = "/home/ben/workspace/NLP_Stack/desc/"
     #new_root = "/home/ben/workspace/NLP_Stack_Installer/desc/"
+    
+    """
     arg_dict = Setup()
     
     if arg_dict["clean_xml"] == True:
@@ -248,10 +262,11 @@ def main_prod():
         create_document_set(arg_dict)
         create_model_set(arg_dict)
         create_cpe_set(arg_dict)
+    """
     
-    """
-    Tomorrow, convert the folder readers to generated objects.
-    """
+    config = ConfigFile() 
+    config.create_clean_file()
+    config.create_default_with_comments()
     
     #put_99_ncic()
 if __name__ == '__main__':
