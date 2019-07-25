@@ -17,7 +17,7 @@ from Main.FJSP_Collection_Processor_Document_Data_Process import generate_FJSP_C
 from Main.FJSP_Collection_Processor_Model_Data_Ingest import generate_FJSP_Collection_Processor_Model_Data_Ingest
 from Main.FJSP_Collection_Processor_Model_Data_Process  import generate_FJSP_Collection_Processor_Model_Data_Process
 
-from Main.FJSP_Collection_Processor_Base import Generate_FJSP_Collection_Processor_Base
+from Main.FJSP_FolderReader_Base import Generate_FJSP_Collection_Processor_Base
 
 import os
 import argparse
@@ -186,7 +186,7 @@ def create_document_set(arg_dict):
 def create_model_set(arg_dict):
     model_ingest_xml = Path("{}/ContentProcessingEngine/FJSP/FJSP_FolderReader_Model_Data_Ingest_CPE.xml".format(arg_dict["root"]))
     generate_folder_reader_model_data_ingest_cpe(model_ingest_xml,
-                                                      arg_dict["document_text_folder"], 
+                                                      arg_dict["category_text_folder"], 
                                                       arg_dict["database_server"], 
                                                       arg_dict["database"], 
                                                       arg_dict["database_user"], 
@@ -195,13 +195,98 @@ def create_model_set(arg_dict):
                                                       arg_dict["job_queue"])
     model_process_xml = Path("{}/ContentProcessingEngine/FJSP/FJSP_FolderReader_Model_Data_Process_CPE.xml".format(arg_dict["root"]))
     generate_folder_reader_model_data_process_cpe(model_process_xml,
-                                                       arg_dict["document_text_folder"], 
+                                                       arg_dict["category_text_folder"], 
                                                        arg_dict["database_server"], 
                                                        arg_dict["database"], 
                                                        arg_dict["database_user"], 
                                                        arg_dict["database_password"], 
                                                        arg_dict["database_port"], 
                                                        arg_dict["job_queue"])
+
+def create_folder_readers(arg_dict):
+    document_ingest_xml = Path("{}/ContentProcessingEngine/FJSP/FJSP_FolderReader_Document_Data_Ingest_CPE.xml".format(arg_dict["root"]))
+    Generate_FJSP_Collection_Processor_Base(output_file = document_ingest_xml,
+                                            is_document_data = True,
+                                            is_insert = True,
+                                            base_document_folder = arg_dict["document_text_folder"],
+                                            database_server = arg_dict["database_server"],
+                                            database = arg_dict["database"], 
+                                            database_user = arg_dict["database_user"], 
+                                            database_password = arg_dict["database_password"],
+                                            database_type = arg_dict["database_type"],
+                                            database_port = arg_dict["database_port"],
+                                            use_job_queue = arg_dict["job_queue"],
+                                            no_text = arg_dict["no_text"],
+                                            no_csv = arg_dict["no_csv"],
+                                            no_docx = arg_dict["no_docx"],
+                                            no_pdf = arg_dict["no_pdf"],
+                                            no_html = arg_dict["no_html"],
+                                            csv_ids = arg_dict["csv_id"],
+                                            csv_texts = arg_dict["csv_text"],
+                                            csv_cats = arg_dict["csv_category"])
+    
+    document_process_xml = Path("{}/ContentProcessingEngine/FJSP/FJSP_FolderReader_Document_Data_Process_CPE.xml".format(arg_dict["root"]))
+    Generate_FJSP_Collection_Processor_Base(output_file = document_process_xml,
+                                            is_document_data = True,
+                                            is_insert = False,
+                                            base_document_folder = arg_dict["document_text_folder"],
+                                            database_server = arg_dict["database_server"],
+                                            database = arg_dict["database"], 
+                                            database_user = arg_dict["database_user"], 
+                                            database_password = arg_dict["database_password"],
+                                            database_type = arg_dict["database_type"],
+                                            database_port = arg_dict["database_port"],
+                                            use_job_queue = arg_dict["job_queue"],
+                                            no_text = arg_dict["no_text"],
+                                            no_csv = arg_dict["no_csv"],
+                                            no_docx = arg_dict["no_docx"],
+                                            no_pdf = arg_dict["no_pdf"],
+                                            no_html = arg_dict["no_html"],
+                                            csv_ids = arg_dict["csv_id"],
+                                            csv_texts = arg_dict["csv_text"],
+                                            csv_cats = arg_dict["csv_category"])
+    
+    model_ingest_xml = Path("{}/ContentProcessingEngine/FJSP/FJSP_FolderReader_Model_Data_Ingest_CPE.xml".format(arg_dict["root"]))
+    Generate_FJSP_Collection_Processor_Base(output_file = model_ingest_xml,
+                                            is_document_data = False,
+                                            is_insert = True,
+                                            base_document_folder = arg_dict["document_text_folder"],
+                                            database_server = arg_dict["database_server"],
+                                            database = arg_dict["database"], 
+                                            database_user = arg_dict["database_user"], 
+                                            database_password = arg_dict["database_password"],
+                                            database_type = arg_dict["database_type"],
+                                            database_port = arg_dict["database_port"],
+                                            use_job_queue = arg_dict["job_queue"],
+                                            no_text = arg_dict["no_text"],
+                                            no_csv = arg_dict["no_csv"],
+                                            no_docx = arg_dict["no_docx"],
+                                            no_pdf = arg_dict["no_pdf"],
+                                            no_html = arg_dict["no_html"],
+                                            csv_ids = arg_dict["csv_id"],
+                                            csv_texts = arg_dict["csv_text"],
+                                            csv_cats = arg_dict["csv_category"])
+    
+    model_process_xml = Path("{}/ContentProcessingEngine/FJSP/FJSP_FolderReader_Model_Data_Process_CPE.xml".format(arg_dict["root"]))
+    Generate_FJSP_Collection_Processor_Base(output_file = model_process_xml,
+                                            is_document_data = False,
+                                            is_insert = False,
+                                            base_document_folder = arg_dict["document_text_folder"],
+                                            database_server = arg_dict["database_server"],
+                                            database = arg_dict["database"], 
+                                            database_user = arg_dict["database_user"], 
+                                            database_password = arg_dict["database_password"],
+                                            database_type = arg_dict["database_type"],
+                                            database_port = arg_dict["database_port"],
+                                            use_job_queue = arg_dict["job_queue"],
+                                            no_text = arg_dict["no_text"],
+                                            no_csv = arg_dict["no_csv"],
+                                            no_docx = arg_dict["no_docx"],
+                                            no_pdf = arg_dict["no_pdf"],
+                                            no_html = arg_dict["no_html"],
+                                            csv_ids = arg_dict["csv_id"],
+                                            csv_texts = arg_dict["csv_text"],
+                                            csv_cats = arg_dict["csv_category"])
     
 def create_cpe_set(arg_dict):
     cas_pool_size = arg_dict["threads"]
@@ -266,8 +351,8 @@ def main_prod():
     
     config = ConfigFile() 
     arg_dict = config.load_config()
-    for x in arg_dict:
-        print("{}: {}".format(x, arg_dict[x]))
+    create_folder_readers(arg_dict)
+    
     
     #put_99_ncic()
 if __name__ == '__main__':

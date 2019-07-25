@@ -343,7 +343,7 @@ The default is 0.</description>
                 
         <value>
                     
-          <boolean>true</boolean>
+          <boolean>$READ_CSV</boolean>
                   
         </value>
               
@@ -355,7 +355,7 @@ The default is 0.</description>
                 
         <value>
                     
-          <boolean>true</boolean>
+          <boolean>$READ_PDF</boolean>
                   
         </value>
               
@@ -367,7 +367,7 @@ The default is 0.</description>
                 
         <value>
                     
-          <boolean>true</boolean>
+          <boolean>$READ_HTML</boolean>
                   
         </value>
               
@@ -379,7 +379,7 @@ The default is 0.</description>
                 
         <value>
                     
-          <boolean>true</boolean>
+          <boolean>$READ_DOCX</boolean>
                   
         </value>
               
@@ -392,14 +392,8 @@ The default is 0.</description>
         <value>
                     
           <array>
-                        
-            <string>IDENTIFIER</string>
-                        
-            <string>id</string>
-                        
-            <string>Id</string>
-                        
-            <string>ID</string>
+            
+            $CSV_ID
                       
           </array>
                   
@@ -414,16 +408,8 @@ The default is 0.</description>
         <value>
                     
           <array>
-                        
-            <string>text</string>
-                        
-            <string>Text</string>
-                        
-            <string>TEXT</string>
-                        
-            <string>SEARCH FIELD</string>
-                        
-            <string>charge</string>
+          
+            $CSV_TEXT
                       
           </array>
                   
@@ -497,7 +483,19 @@ The default is 0.</description>
                 
         <value>
                     
-          <string>5432</string>
+          <string>$DATABASE_TYPE</string>
+                  
+        </value>
+              
+      </nameValuePair>
+      
+      <nameValuePair>
+                
+        <name>DatabasePort</name>
+                
+        <value>
+                    
+          <string>$DATABASE_PORT</string>
                   
         </value>
               
@@ -509,7 +507,7 @@ The default is 0.</description>
                 
         <value>
                     
-          <boolean>true</boolean>
+          <boolean>$READ_TEXT</boolean>
                   
         </value>
               
@@ -546,8 +544,8 @@ The default is 0.</description>
         <value>
                     
           <array>
-                        
-            <string>ncic_code</string>
+            
+            $CSV_CATS            
                       
           </array>
                   
@@ -618,8 +616,17 @@ def Generate_FJSP_Collection_Processor_Base(output_file,
                                             database, 
                                             database_user, 
                                             database_password, 
-                                            database_port, 
-                                            use_job_queue):
+                                            database_type,
+                                            database_port,
+                                            use_job_queue,
+                                            no_text,
+                                            no_csv,
+                                            no_docx,
+                                            no_pdf,
+                                            no_html,
+                                            csv_ids,
+                                            csv_texts,
+                                            csv_cats):
     """output_file: a pathlib object"""
     job_queue_value = None
     data_type = None
@@ -639,13 +646,38 @@ def Generate_FJSP_Collection_Processor_Base(output_file,
         job_queue_value = "1"
     elif use_job_queue == True and is_insert == False:
         job_queue_value = "2"
-    
         
+    read_text = no_text == False
+    read_csv = no_csv == False
+    read_pdf = no_pdf == False
+    read_html = no_html == False
+    read_docx = no_docx == False
+    
+    csv_id_string = ""
+    for csv_id in csv_ids:
+        csv_id_string = "{}<string>{}</string>\n".format(csv_id_string, csv_id)
+    
+    csv_text_string = ""
+    for csv_text in csv_texts:
+        csv_text_string = "{}<string>{}</string>\n".format(csv_text_string, csv_text)
+    
+    csv_cat_string = ""
+    for csv_cat in csv_cats:
+        csv_cat_string = "{}<string>{}</string>\n".format(csv_cat_string, csv_cat)
         
     s = Template(FJSP_Collection_Processor_Document_Data_Ingest)
     ret = s.substitute(DATA_TYPE=data_type, DATABASE_SERVER=database_server, DATABASE_USER=database_user, DATABASE=database,
-                       DATABASE_PASSWORD=database_password, DATABASE_PORT=database_port, 
-                       BASE_DOCUMENT_FOLDER=base_document_folder, JOB_QUEUE_VALUE=job_queue_value)
+                       DATABASE_PASSWORD=database_password, DATABASE_TYPE=database_type, DATABASE_PORT=database_port, 
+                       BASE_DOCUMENT_FOLDER=base_document_folder, JOB_QUEUE_VALUE=job_queue_value,
+                       READ_TEXT=read_text,
+                       READ_CSV=read_csv,
+                       READ_PDF=read_pdf,
+                       READ_HTML=read_html,
+                       READ_DOCX=read_docx,
+                       CSV_ID = csv_id_string,
+                       CSV_TEXT = csv_text_string,
+                       CSV_CATS = csv_cat_string)
+    
     with output_file.open(mode="w") as out_file:
         out_file.write(ret)
     with output_file.open(mode="w") as out_file:

@@ -53,10 +53,11 @@ class ConfigFile:
         arg_dict["Files to Read"]["no_csv"] = False 
         arg_dict["Files to Read"]["no_pdf"] = False 
         arg_dict["Files to Read"]["no_docx"] = False
+        arg_dict["Files to Read"]["no_html"] = False
         
         arg_dict["Files to Read"]["csv_id"] = ["id", "Id", "ID", "IDENTIFIER"]
-        arg_dict["Files to Read"]["csv_text"] = ["text", "TEXT", "SEARCH FIELD", "charge"]
-        arg_dict["Files to Read"]["csv_category"] = ["ncic_code"]
+        arg_dict["Files to Read"]["csv_text"] = ["text", "TEXT", "SEARCH FIELD"]
+        arg_dict["Files to Read"]["csv_category"] = ["csv_category_1", "csv_category_2"]
         with open("./config.yaml", "w") as yml_file:
             yaml.dump(arg_dict, yml_file)
     
@@ -100,7 +101,7 @@ Project:
   #If additional projects are added, update this configuration, the xml files, the project files, and the database. 
   project_type: '1'
   
-  #The timeout for how long users can reserve a document.  
+  #The timeout for how long users can reserve a document. This is in seconds. 
   checkout_timeout: '600'
   
   # User information
@@ -123,6 +124,7 @@ Files to Read:
   no_docx: false
   no_pdf: false
   no_text: false
+  no_html: false
 
   # The id columns in the csv files.
   # Please note that this list is not exhaustive. If your csv files contain id columns with names that are not in this list, add them here.
@@ -155,5 +157,13 @@ Threading and Queues:
     def load_config(self):
         arg_dict = None
         with open("./config.yaml", "r") as yml_file:
-            arg_dict = yaml.load(yml_file)
-        return arg_dict
+            arg_dict = yaml.safe_load(yml_file)
+        if arg_dict == None:
+            return None
+        
+        arg_dict_ret = {}
+        for key in arg_dict:
+            for x in arg_dict[key]:
+                arg_dict_ret[x] = arg_dict[key][x]
+        
+        return arg_dict_ret
