@@ -152,5 +152,8 @@ Threading and Queues:
         with open("./config.yaml", "w") as yml_file:
             yml_file.write(s)
     
+    def load_config(self):
+        pass
+    
     def __init__(self):
-        self.create_default_file()
+        self.load_config()
