@@ -349,9 +349,14 @@ def main_prod():
         create_cpe_set(arg_dict)
     """
     
-    config = ConfigFile() 
-    arg_dict = config.load_config()
-    create_folder_readers(arg_dict)
+    config = ConfigFile()
+    if not config.config_files_exist():
+        config.create_clean_file()
+        config.create_default_with_comments()
+        return
+    else:
+        arg_dict = config.load_config()
+        create_folder_readers(arg_dict)
     
     
     #put_99_ncic()

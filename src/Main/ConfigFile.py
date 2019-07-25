@@ -4,6 +4,7 @@ Created on Jul 25, 2019
 @author: ben
 """
 import yaml
+from pathlib import Path
 
 class ConfigFile:
     
@@ -167,3 +168,9 @@ Threading and Queues:
                 arg_dict_ret[x] = arg_dict[key][x]
         
         return arg_dict_ret
+    
+    def config_files_exist(self):
+        if not Path("./config.yaml").exists() and not Path("./clean_xml.yaml").exists():
+            return False
+        else:
+            return True
