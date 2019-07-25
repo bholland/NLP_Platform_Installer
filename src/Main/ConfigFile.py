@@ -153,7 +153,7 @@ Threading and Queues:
             yml_file.write(s)
     
     def load_config(self):
-        pass
-    
-    def __init__(self):
-        self.load_config()
+        arg_dict = None
+        with open("./config.yaml", "r") as yml_file:
+            arg_dict = yaml.load(yml_file)
+        return arg_dict
