@@ -170,7 +170,7 @@ Threading and Queues:
         return arg_dict_ret
     
     def config_files_exist(self):
-        if not Path("./config.yaml").exists() and not Path("./clean_xml.yaml").exists():
+        if not Path("./config.yaml").exists() or not Path("./clean_xml.yaml").exists():
             return False
         else:
             return True
