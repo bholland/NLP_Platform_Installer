@@ -300,7 +300,8 @@ def create_folder_readers(arg_dict):
                                             database_user = arg_dict["database_user"], 
                                             database_password = arg_dict["database_password"],
                                             database_type = arg_dict["database_type"],
-                                            database_port = arg_dict["database_port"])
+                                            database_port = arg_dict["database_port"], 
+                                            use_job_queue = arg_dict["job_queue"])
     
 def create_cpe_set(arg_dict):
     cas_pool_size = arg_dict["threads"]

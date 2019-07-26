@@ -102,6 +102,23 @@ DocumentClassifier_CPE = """<?xml version="1.0" encoding="UTF-8"?>
         <mandatory>false</mandatory>
               
       </configurationParameter>
+      
+      <configurationParameter>
+                
+        <name>UseJobQueue</name>
+                
+        <description>Sets if this process should use the job queue
+0: disable the job queue
+1: insert document
+2: process documents</description>
+                
+        <type>Integer</type>
+                
+        <multiValued>false</multiValued>
+                
+        <mandatory>true</mandatory>
+              
+      </configurationParameter>
           
     </configurationParameters>
         
@@ -178,6 +195,18 @@ DocumentClassifier_CPE = """<?xml version="1.0" encoding="UTF-8"?>
         </value>
               
       </nameValuePair>
+      
+      <nameValuePair>
+                
+        <name>UseJobQueue</name>
+                
+        <value>
+                    
+          <integer>$JOB_QUEUE_VALUE</integer>
+                  
+        </value>
+              
+      </nameValuePair>
           
     </configurationParameterSettings>
         
@@ -233,20 +262,20 @@ DocumentClassifier_CPE = """<?xml version="1.0" encoding="UTF-8"?>
   
 </collectionReaderDescription>
 """
-def Generate_Document_Classifier_CPE(output_file, database_server, database, database_user, database_password, database_type, database_port):
+def Generate_Document_Classifier_CPE(output_file, database_server, database, database_user, database_password, database_type, database_port, use_job_queue):
     """output_file: a pathlib object"""
     job_queue_value = None
-    """
-    implement this later
+    
     if use_job_queue == True:
         job_queue_value = "1"
     else:
         job_queue_value = "0"
-    """
+    
     
     s = Template(DocumentClassifier_CPE)
     ret = s.substitute(DATABASE_SERVER=database_server, DATABASE_USER=database_user, DATABASE=database,
-                       DATABASE_PASSWORD=database_password, DATABASE_TYPE=database_type, DATABASE_PORT=database_port)
+                       DATABASE_PASSWORD=database_password, DATABASE_TYPE=database_type, DATABASE_PORT=database_port, 
+                       JOB_QUEUE_VALUE=job_queue_value)
     with output_file.open(mode="w") as out_file:
         out_file.write(ret)
     
