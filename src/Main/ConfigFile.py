@@ -174,9 +174,9 @@ Threading and Queues:
             arg_dict = yaml.safe_load(yml_file)
         
         arg_dict_ret = {}
-        for key in arg_dict:
-            for x in arg_dict[key]:
-                arg_dict_ret[x] = arg_dict[key][x]
+        
+        for x in arg_dict:
+            arg_dict_ret[x] = arg_dict[x]
         return arg_dict_ret
     
     def load_config(self):
