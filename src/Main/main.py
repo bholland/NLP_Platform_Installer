@@ -33,6 +33,9 @@ def clean_xml(file_root, new_root):
     if file_root[-1] != "/":
         file_root = "{}/".format(file_root)
     
+    if not Path(file_root).exists():
+        print("The root directory {} does not exist.".format(file_root))
+    
     #if new_root[0] != "/":
     #    raise Exception("new_root should not be a relative path.")
     if new_root[-1] != "/":
