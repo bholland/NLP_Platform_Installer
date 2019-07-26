@@ -350,14 +350,22 @@ def main_prod():
     """
     
     config = ConfigFile()
+    
     if not config.config_files_exist():
-        config.create_clean_file()
+        config.create_clean_file_with_comments()
         config.create_default_with_comments()
         return
     else:
+        #Clean everything
+        arg_dict = config.load_clean_config()
+        if arg_dict["clean_xml"] == True:
+            clean_xml(arg_dict["copy_root"], arg_dict["new_root"])
+        
+        #Load the config file and create all of teh xml
         arg_dict = config.load_config()
+        create_setup_cpe(arg_dict)
         create_folder_readers(arg_dict)
-    
+        create_cpe_set(arg_dict)
     
     #put_99_ncic()
 if __name__ == '__main__':

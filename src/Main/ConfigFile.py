@@ -15,7 +15,20 @@ class ConfigFile:
         arg_dict["new_root"] = "./new_root/"
         with open("./clean_xml.yaml", "w") as yml_file:
             yaml.dump(arg_dict, yml_file)
-    
+            
+    def create_clean_file_with_comments(self):
+        s = """
+# Clean the XML, if set to false, this step is skipped.
+clean_xml: true
+
+# The location of the descriptors to copy
+copy_root: ./
+
+new_root: ./new_root/
+        """
+        with open("./clean_xml.yaml", "w") as yml_file:
+            yml_file.write(s)
+
     def create_default_file(self):
         """
         Generate the default config file using the arg_dict dictionary. Use this to create the yaml object. 
@@ -154,6 +167,17 @@ Threading and Queues:
   threads: 1"""
         with open("./config.yaml", "w") as yml_file:
             yml_file.write(s)
+    
+    def load_clean_config(self):
+        arg_dict = None
+        with open("./clean_xml.yaml", "r") as yml_file:
+            arg_dict = yaml.safe_load(yml_file)
+        
+        arg_dict_ret = {}
+        for key in arg_dict:
+            for x in arg_dict[key]:
+                arg_dict_ret[x] = arg_dict[key][x]
+        return arg_dict_ret
     
     def load_config(self):
         arg_dict = None
