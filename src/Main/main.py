@@ -18,6 +18,8 @@ from Main.FJSP_Collection_Processor_Model_Data_Ingest import generate_FJSP_Colle
 from Main.FJSP_Collection_Processor_Model_Data_Process  import generate_FJSP_Collection_Processor_Model_Data_Process
 
 from Main.FJSP_FolderReader_Base import Generate_FJSP_Collection_Processor_Base
+from Main.DocumentClassifier_CPE import Generate_Document_Classifier_CPE
+from Main.FJSP_Build_Models_And_Tag import generate_FJSP_Build_Models_And_Tag
 
 import os
 import argparse
@@ -291,6 +293,15 @@ def create_folder_readers(arg_dict):
                                             csv_texts = arg_dict["csv_text"],
                                             csv_cats = arg_dict["csv_category"])
     
+    model_process_xml = Path("{}/ContentProcessingEngine/FJSP/DocumentClassifier_CPE.xml".format(arg_dict["root"]))
+    Generate_Document_Classifier_CPE(output_file = model_process_xml,
+                                            database_server = arg_dict["database_server"],
+                                            database = arg_dict["database"], 
+                                            database_user = arg_dict["database_user"], 
+                                            database_password = arg_dict["database_password"],
+                                            database_type = arg_dict["database_type"],
+                                            database_port = arg_dict["database_port"])
+    
 def create_cpe_set(arg_dict):
     cas_pool_size = arg_dict["threads"]
     threads = arg_dict["threads"]
@@ -309,6 +320,9 @@ def create_cpe_set(arg_dict):
     
     xml_document = Path("{}/ContentProcessingEngine/FJSP/FJSP_Collection_Processor_Model_Data_Process.xml".format(arg_dict["root"]))
     generate_FJSP_Collection_Processor_Model_Data_Process(xml_document, cas_pool_size, threads)
+    
+    xml_document = Path("{}/ContentProcessingEngine/FJSP/FJSP_Build_Models_And_Tag.xml".format(arg_dict["root"]))
+    generate_FJSP_Build_Models_And_Tag(xml_document, cas_pool_size, threads)
     
 def clean(copy_root, new_root):
     clean_xml(copy_root, new_root)
