@@ -370,8 +370,10 @@ def main_prod():
     config = ConfigFile()
     
     if not config.config_files_exist():
+        print("No configuration files found, creating them.")
         config.create_clean_file_with_comments()
         config.create_default_with_comments()
+        print("Configuration files created. Please edit config.yaml and clean_xml.yaml as appropriate and run this command again.")
         return
     else:
         #Clean everything
