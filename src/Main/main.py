@@ -20,6 +20,7 @@ from Main.FJSP_Collection_Processor_Model_Data_Process  import generate_FJSP_Col
 from Main.FJSP_FolderReader_Base import Generate_FJSP_Collection_Processor_Base
 from Main.DocumentClassifier_CPE import Generate_Document_Classifier_CPE
 from Main.FJSP_Build_Models_And_Tag import generate_FJSP_Build_Models_And_Tag
+from Main.DoNothing import generate_do_nothing
 
 import os
 import argparse
@@ -324,6 +325,9 @@ def create_cpe_set(arg_dict):
     
     xml_document = Path("{}/ContentProcessingEngine/FJSP/FJSP_Build_Models_And_Tag.xml".format(arg_dict["root"]))
     generate_FJSP_Build_Models_And_Tag(xml_document, cas_pool_size, threads)
+    
+    xml_document = Path("{}/ContentProcessingEngine/FJSP/DoNothing.xml".format(arg_dict["root"]))
+    generate_do_nothing(xml_document)
     
 def clean(copy_root, new_root):
     clean_xml(copy_root, new_root)
