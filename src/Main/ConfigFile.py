@@ -24,6 +24,7 @@ clean_xml: true
 # The location of the descriptors to copy
 copy_root: ./
 
+# The place where you want the descriptors to move to. This is probably your install directory. 
 new_root: ./new_root/
         """
         with open("./clean_xml.yaml", "w") as yml_file:
@@ -86,7 +87,7 @@ General:
   # To use that configuration file, copy this file and rename the clean_xml.yaml file to config.yaml in this directory
   generate_xml: true
   
-  # The root path 
+  # The root path where to generate the XML. This is probably your install path. 
   root: ./
   
 Database Connection:
